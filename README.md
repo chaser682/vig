@@ -69,7 +69,7 @@ truncate at the evaluation budget.
 ## Installation
 
 ```bash
-git clone <repo-url> && cd vig
+git clone https://github.com/chaser682/vig.git && cd vig
 pip install -r requirements.txt
 ```
 
