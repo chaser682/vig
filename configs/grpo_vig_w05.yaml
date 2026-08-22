@@ -1,0 +1,59 @@
+# VIG-only + clip，w_vig=0.5，500步
+# 对照：
+# 意义：在 clip 保护下验证加大 VIG 奖励权重是否进一步提升效果。
+
+# ---- 模型 ----
+model_name_or_path: "Qwen/Qwen3-VL-8B-Thinking"
+output_dir: "./output/grpo_vig_w05"
+
+# ---- 数据 ----
+data_cache_dir: "./hf_cache/datasets"
+max_per_source: null
+sources:
+  - mmstar
+  - mathvista
+  - logicvista
+
+# ---- GRPO 超参（与 grpo_vig_token.yaml 完全一致）----
+num_train_epochs: 3
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 1.0e-6
+warmup_steps: 10
+max_steps: 500
+group_size: 8
+temperature: 1.0
+top_p: 0.95
+max_new_tokens: 2048
+kl_coef: 0.04
+
+# ---- 奖励 ----
+w_format: 0.1
+w_acc: 1.0
+w_vig: 0.5                            # 关键改动：0.3 → 0.5
+
+# ---- VIG algorithm parameters ----
+vig_score_mode: "vig_only"            # KeepScore = VIG，lambda/mu 无效
+vig_comparison_mode: "no_image"
+vig_mask_ratio: 0.5
+vig_lambda: 1.0
+vig_mu: 1.0
+vig_baseline: 0.0
+vig_max_steps: null
+vig_aggregation_mode: "mean"
+vig_split_high_variance: false
+vig_variance_threshold: 2.0
+vig_gamma: 0.0
+vig_position_weight: false
+vig_zscore_norm: false
+
+# ---- 日志和保存 ----
+logging_steps: 1
+save_steps: 100
+report_to: "tensorboard"
+
+# ---- 其他 ----
+seed: 42
+dataloader_num_workers: 4
+gradient_checkpointing: true
+vllm_gpu_memory_utilization: 0.25

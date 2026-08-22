@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Experiment artifacts
+output/
+hf_cache/
+wandb/
+runs/
+*.log
+*.pt
+*.safetensors
+checkpoint-*/

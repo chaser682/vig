@@ -1,0 +1,17 @@
+# Versions used for all experiments reported in the paper (Python 3.12).
+# The RL stack is version-sensitive: trl changed the GRPOTrainer reward
+# signature across releases, so pin these if you hit a mismatch.
+torch==2.10.0
+transformers==4.57.1
+trl==1.4.0
+accelerate==1.13.0
+deepspeed>=0.16.0
+vllm==0.18.1            # inference / evaluation and GRPO rollout (colocate mode)
+datasets>=3.0.0
+Pillow>=10.0.0
+numpy
+pyyaml
+tqdm
+tensorboard
+# Optional: only needed for --judge_mode api (rule-based scoring is the default)
+# openai

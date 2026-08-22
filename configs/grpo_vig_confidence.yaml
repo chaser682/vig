@@ -1,0 +1,66 @@
+# A1 confidence 对照臂（killer ablation）
+# R = clip(-avg_token H_vis, -1, 1)：只奖励有图前向的低熵（自信），去掉视觉对比。
+# 与 grpo_vig_token 完全同配置（w=1.0, token 级, 500 步, seed 42），唯一差异是 score_mode。
+# 决策规则：若本臂 AvgACC 追平 VIG → 核心主张降级（收益来自熵塑形而非视觉对比）。
+model_name_or_path: "Qwen/Qwen3-VL-8B-Thinking"
+output_dir: "./output/grpo_vig_confidence"
+
+# ---- 数据 ----
+data_cache_dir: "./hf_cache/datasets"
+max_per_source: null
+sources:
+  - mmstar
+  - mathvista
+  - logicvista
+
+# ---- GRPO 超参 ----
+num_train_epochs: 3
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 1.0e-6
+warmup_steps: 10
+max_steps: 500
+group_size: 8
+temperature: 1.0
+top_p: 0.95
+max_new_tokens: 2048
+kl_coef: 0.04
+
+# ---- 损失函数 ----
+loss_type: "grpo"
+epsilon: 0.2
+epsilon_high: null
+mask_truncated_completions: false
+
+# ---- 奖励 ----
+w_format: 0.1
+w_acc: 1.0
+w_vig: 1.0
+w_soft_overlong: 0.0
+
+# ---- VIG algorithm parameters ----
+vig_score_mode: "neg_hvis"         # A1 confidence 臂: R = clip(-mean H_vis, -1, 1)
+vig_comparison_mode: "no_image"
+vig_step_split_mode: "token"          # 关键改动：不做步骤切分，token 级别直接均值
+vig_mask_ratio: 0.5
+vig_lambda: 1.0
+vig_mu: 1.0
+vig_baseline: 0.0
+vig_max_steps: null
+vig_aggregation_mode: "mean"
+vig_split_high_variance: false
+vig_variance_threshold: 2.0
+vig_gamma: 0.0
+vig_position_weight: false
+vig_zscore_norm: false
+
+# ---- 日志和保存 ----
+logging_steps: 1
+save_steps: 100
+report_to: "tensorboard"
+
+# ---- 其他 ----
+seed: 42
+dataloader_num_workers: 4
+gradient_checkpointing: true
+vllm_gpu_memory_utilization: 0.25

@@ -1,0 +1,52 @@
+# GRPO 对比方法 3: ThinkPrune Stage 1 (budget=2048)
+# 模型：Qwen3-VL-4B-Thinking
+# 论文：https://arxiv.org/abs/2504.01296
+#
+# 与 grpo_thinkprune.yaml（8B）的关键差异：
+#   - model_name_or_path / output_dir 更换为 4B
+#   - gradient_accumulation_steps: 1（原为 2，合并进 per_device_train_batch_size）
+#   - per_device_train_batch_size: 4（原为 2，等效 batch size 不变 = 4）
+#   - 加速配置: configs/accelerate_zero3_small.yaml (grad_accum=1)
+
+# ---- 模型 ----
+model_name_or_path: "Qwen/Qwen3-VL-4B-Thinking"
+output_dir: "./output/grpo_thinkprune_stage1_4b"
+
+# ---- 数据 ----
+data_cache_dir: "./hf_cache/datasets"
+max_per_source: null
+sources:
+  - mmstar
+  - mathvista
+  - logicvista
+
+# ---- GRPO 超参 ----
+num_train_epochs: 3
+per_device_train_batch_size: 4    # 原 2 × grad_accum(2) = 4，grad_accum=1 后补充到 batch_size
+gradient_accumulation_steps: 1
+learning_rate: 1.0e-6
+warmup_steps: 10
+max_steps: 500
+group_size: 8
+temperature: 1.0
+top_p: 0.95
+max_new_tokens: 2048
+kl_coef: 0.04
+
+# ---- 奖励：ThinkPrune Stage1 ----
+reward_type: "thinkprune"
+thinkprune_budget: 2048
+thinkprune_truncate_at_budget: true
+w_acc: 1.0
+w_format: 0.1
+
+# ---- 日志和保存 ----
+logging_steps: 1
+save_steps: 100
+report_to: "tensorboard"
+
+# ---- 其他 ----
+seed: 42
+dataloader_num_workers: 4
+gradient_checkpointing: true
+vllm_gpu_memory_utilization: 0.45

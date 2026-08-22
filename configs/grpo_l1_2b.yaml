@@ -1,0 +1,55 @@
+# GRPO 对比方法 2: L1-LCPO（线性长度惩罚）
+# 模型：Qwen3-VL-2B-Thinking
+# 论文：https://arxiv.org/abs/2503.04697
+#
+# 与 grpo_l1.yaml（8B）的关键差异：
+#   - model_name_or_path / output_dir 更换为 2B
+#   - gradient_accumulation_steps: 1（原为 2，合并进 per_device_train_batch_size）
+#   - per_device_train_batch_size: 4（原为 2，等效 batch size 不变 = 4）
+#   - 加速配置: configs/accelerate_zero3_small.yaml (grad_accum=1)
+
+# ---- 模型 ----
+model_name_or_path: "Qwen/Qwen3-VL-2B-Thinking"
+output_dir: "./output/grpo_l1_2b"
+
+# ---- 数据 ----
+data_cache_dir: "./hf_cache/datasets"
+max_per_source: null
+sources:
+  - mmstar
+  - mathvista
+  - logicvista
+
+# ---- GRPO 超参 ----
+num_train_epochs: 3
+per_device_train_batch_size: 4    # 原 2 × grad_accum(2) = 4，grad_accum=1 后补充到 batch_size
+gradient_accumulation_steps: 1
+learning_rate: 1.0e-6
+warmup_steps: 10
+max_steps: 500
+group_size: 8
+temperature: 1.0
+top_p: 0.95
+max_new_tokens: 2048
+kl_coef: 0.04
+
+# ---- 奖励：L1 线性长度惩罚 ----
+reward_type: "l1"
+l1_mode: "exact"
+l1_alpha: 0.0003
+l1_budget_min: 100
+l1_budget_max: 1000
+w_acc: 1.0
+w_format: 0.1
+w_length: 1.0
+
+# ---- 日志和保存 ----
+logging_steps: 1
+save_steps: 100
+report_to: "tensorboard"
+
+# ---- 其他 ----
+seed: 42
+dataloader_num_workers: 4
+gradient_checkpointing: true
+vllm_gpu_memory_utilization: 0.5
