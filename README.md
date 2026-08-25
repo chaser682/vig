@@ -173,7 +173,17 @@ post-hoc pruning criterion. See the Limitations section of the paper.
 
 ## Citation
 
-Not long after...
+```bibtex
+  @misc{luo2026vigvisualinformationgain,
+      title={VIG: Visual Information Gain as a Reward Signal for Multimodal Chain-of-Thought Compression}, 
+      author={Wen Luo and Xiaohan Yi and Xiaotao Huang and Liqun Huang},
+      year={2026},
+      eprint={2608.21883},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2608.21883}, 
+}
+```
 
 <!-- ```bibtex
 @inproceedings{luo2026vig,
