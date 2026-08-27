@@ -1,6 +1,10 @@
 # VIG: Visual Information Gain as a Reward Signal for Multimodal Chain-of-Thought Compression
 
-> **Accepted to the Findings of EMNLP 2026.**
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Accepted%20at%20EMNLP%202026-brightgreen.svg">
+  <a href="https://arxiv.org/abs/2608.21883"><img src="https://img.shields.io/badge/arXiv-2608.21883-B31B1B.svg"></a>
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg">
+</p>
 
 VIG is an information-theoretic GRPO reward for compressing multimodal
 chain-of-thought (CoT). It scores each reasoning token by **how much the image
